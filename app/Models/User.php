@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,18 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
+    // Accesor para formatear la fecha de creación
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->timezone(config('app.timezone'))->format('Y-m-d H:i:s');
+    }
+
+    // Accesor para formatear la fecha de actualización
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->timezone(config('app.timezone'))->format('Y-m-d H:i:s');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +57,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relación uno a muchos
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
     }
 }
