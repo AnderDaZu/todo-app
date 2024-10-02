@@ -31,7 +31,7 @@ class Note extends Model
     // Accesor para formatear la fecha de vencimiento
     public function getDueDateAttribute($value)
     {
-        return Carbon::parse($value)->timezone(config('app.timezone'))->format('Y-m-d H:i:s');
+        return $value ? Carbon::parse($value)->timezone(config('app.timezone'))->format('Y-m-d') : null;
     }
 
     protected function title(): Attribute
@@ -42,18 +42,9 @@ class Note extends Model
         );
     }
 
-    protected function image(): Attribute
+    public function getImagePathAttribute($value)
     {
-        return new Attribute(
-            get: function () {
-                if ($this->image_path) {
-                    return Storage::url($this->image_path);
-                } else {
-                    // cuando no se adjunta imagen a una nota, se muestra una por defecto
-                    return asset('imgs/default-image-min.webp');
-                }
-            },
-        );
+        return $value ? Storage::url($value) : asset('imgs/default-image-min.webp');
     }
 
     // Relación uno a muchos inversa
