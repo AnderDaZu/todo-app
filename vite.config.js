@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue'
+import vue from '@vitejs/plugin-vue';
+import dotenv from 'dotenv';
+
+// Cargar las variables de entorno
+dotenv.config();
 
 export default defineConfig({
     plugins: [
@@ -10,9 +14,14 @@ export default defineConfig({
         }),
         vue(),
     ],
-    // build: {
-    //     outDir: 'public/build',
-    // },
+    define: {
+        'process.env': {
+            APP_ENV: process.env.APP_ENV,
+        },
+    },
+    build: {
+        outDir: 'public/build',
+    },
     // server: {
     //     https: true
     // }
