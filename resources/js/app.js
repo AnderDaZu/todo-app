@@ -11,6 +11,7 @@ import { routes } from './routes';
 
 import store from './store';
 
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://todo-app.test/api';
 
 // Crear instancia del router

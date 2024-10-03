@@ -7,7 +7,7 @@
             <nav class="ml-auto">
                 <!-- para resaltar la ruta actual se agrega exact-active-class="clases" a cada elemento -->
                 <div v-if="auth" class="space-x-4 flex items-center sm:space-x-6 h-10">
-                    <RouterLink :to="{ name: 'notes' }"> Notas </RouterLink>
+                    <RouterLink to="/notes"> Notas </RouterLink>
                     <button @click="logout" class="btn-logout">Cerrar sesión</button>
                 </div>
                 <div v-else class="space-x-4 flex items-center sm:space-x-6 h-10">
@@ -18,7 +18,7 @@
         </header>
 
         <!-- Main -->
-        <main class="flex-1 flex items-center justify-center">
+        <main class="flex-1 flex justify-center py-4 bg-main">
             <router-view v-slot="{ Component }">
                 <keep-alive>
                     <component :is="Component" />
@@ -29,7 +29,7 @@
         <!-- Fin Main -->
 
         <!-- Footer -->
-        <footer class="flex items-center min-h-14 px-4 border-t border-gray-300 sm:h-16 md:px-6 lg:px-8">
+        <footer class="flex items-center min-h-14 px-3 border-t border-gray-300 sm:h-16 md:px-6 lg:px-8">
             <p class="flex-1 text-sm text-gray-500 text-center">
                 © {{ new Date().getFullYear() }} ToDo App. Derechos reservados
             </p>
@@ -57,6 +57,14 @@ export default {
         ...mapState([
             'auth'
         ])
+    },
+    watch: {
+        auth(newValue) {
+            if (newValue) {
+                // this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + newValue.token.access_token;
+                this.axios.defaults.headers.common['Authorization'] = 'Bearer ' + newValue.access_token;
+            }
+        }
     }
 }
 

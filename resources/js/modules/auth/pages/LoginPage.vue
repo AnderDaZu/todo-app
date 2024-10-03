@@ -1,6 +1,5 @@
 <template>
     <div class="w-full px-8 md:px-32 lg:px-24">
-        {{ auth }}
         <form @submit.prevent="onLogin" class="bg-white rounded-md shadow-2xl p-5">
             <h1 class="text-gray-800 font-bold text-2xl mb-8">¡Hola de nuevo!</h1>
 
@@ -56,10 +55,10 @@
             </div>
             <button type="button"
                 v-on:click="onLogin"
-                class="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2"
+                class="block w-full mt-5 py-2 rounded-2xl hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2"
                 :class="{
                     'cursor-not-allowed bg-gray-500 hover:bg-gray-500': isDisabled || !formIsValid,
-                    'cursor-pointer bg-indigo-600 hover:bg-indigo-700': !isDisabled
+                    'cursor-pointer bg-indigo-600 hover:bg-indigo-700': !isDisabled && formIsValid
                 }"
                 :disabled="isDisabled || !formIsValid">
                 Iniciar sesión
@@ -112,7 +111,7 @@ export default {
                 localStorage.setItem('auth', JSON.stringify(response.data));
                 this.isDisabled = false;
 
-                this.$router.push({ name: 'notes' });
+                this.$router.push({ name: 'indexNote' });
             })
             .catch(error => {
                 console.log(error.response.data);

@@ -15,16 +15,16 @@ export const routes = [
     // Notes
     {
         path: '/notes',
-        name: 'notes',
+        redirect: { name: 'indexNote' },
         meta: {
             requiresAuth: true
         },
         component: () => import('./modules/notes/layouts/NoteLayout.vue'),
         children: [
             {
-                path: '/',
-                name: 'showNotes',
-                component: () => import('./modules/notes/pages/ShowNotePage.vue'),
+                path: '',
+                name: 'indexNote',
+                component: () => import('./modules/notes/pages/IndexNotePage.vue'),
             },
             {
                 path: 'create',

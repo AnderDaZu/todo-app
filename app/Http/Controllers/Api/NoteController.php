@@ -39,7 +39,10 @@ class NoteController extends Controller
             }
         }
 
-        $notes = Note::with('tags')->orderBy($field, $order)->get();
+        $notes = Note::where('user_id', Auth::user()->id)
+            ->with('tags')
+            ->orderBy($field, $order)
+            ->get();
 
         return response()->json([
             'message' => 'ok',
@@ -94,27 +97,29 @@ class NoteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Note $note)
+    public function show(string $note)
     {
-        // $note = Note::with('tags')->findOrFail($id);
+        $note = Note::with('tags')->findOrFail($note);
 
         return response()->json([
             'message' => 'ok',
-            'data' => $note->load('tags')
+            'data' => $note
         ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Note $note)
+    public function update(Request $request, string $note)
     {
+        $note = Note::findOrFail($note);
+
         $this->validateData($request);
 
         // Actualizar datos
         $note->update([
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $request->title ?? $note->title,
+            'description' => $request->description ?? $note->description,
             'due_date' => $request->due_date ?? $note->due_date,
         ]);
 
@@ -126,7 +131,9 @@ class NoteController extends Controller
             ]);
             $tags[] = $tag->id;
         }
-        $note->tags()->sync($tags);
+        if ( $request->tags ) {
+            $note->tags()->sync($tags);
+        }
 
         // Actualizar imagen
         if ( $request->hasFile('image') )
@@ -134,9 +141,11 @@ class NoteController extends Controller
             $this->updateImage($note, $request->file('image'));
         }
 
+        $note->refresh();
+
         return response()->json([
             'message' => 'Nota actualizada con exito.',
-            'data' => $note->load('tags')
+            'data' => $note
         ]);
     }
 
@@ -145,11 +154,15 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
-        if ( $note->image_path && Storage::exists($note->image_path) )
-        {
-            Storage::delete($note->image_path);
-        }
+        $image_path = $note->getAttributes()['image_path'];
         
+        if ( $image_path )
+        {
+            Storage::delete($image_path);
+        }
+
+        $note->tags()->detach();
+
         $note->delete();
 
         return response()->json([
