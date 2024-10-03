@@ -12,7 +12,10 @@ import { routes } from './routes';
 import store from './store';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://todo-app.test/api';
+// local
+// axios.defaults.baseURL = 'http://todo-app.test/api';
+// producción
+axios.defaults.baseURL = 'https://todo-app-prod.up.railway.app//api';
 
 // Crear instancia del router
 const router = createRouter({
