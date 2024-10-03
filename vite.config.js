@@ -10,10 +10,10 @@ export default defineConfig({
         }),
         vue(),
     ],
-    build: {
-        outDir: 'public/build',
-    },
-    server: {
-        https: true
-    }
+    // build: {
+    //     outDir: 'public/build',
+    // },
+    // server: {
+    //     https: true
+    // }
 });
